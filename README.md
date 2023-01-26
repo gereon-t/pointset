@@ -7,6 +7,8 @@ The `PointSet` class wraps `pyproj` in order to allow coordinate transformations
 Define PointSet with random numbers
 
 ```python 
+from pointset.pointset import PointSet
+
 xyz = np.random.randn(10000, 3) * 20
 point_set = PointSet(xyz=xyz)
 ```
