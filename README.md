@@ -1,6 +1,11 @@
 # Python PointSet Class
 This package includes a class for handling point-coordinates and their datum using EPSG codes. For datum transformations, this package makes use of the `PyProj` package. It meant to simplify coordinate transformations between EPSG codes.
 
+# Installation
+```Console
+python3 -m pip install pointset
+```
+
 # Usage
 The `PointSet` class wraps `pyproj` in order to allow coordinate transformations. In the following, the functionality of the class is explained.
 
