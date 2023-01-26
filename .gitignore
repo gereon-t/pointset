@@ -52,3 +52,4 @@ data
 *.egg-info
 .vscode/
 .coverage
+dist/

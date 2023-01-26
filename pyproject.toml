@@ -1,0 +1,27 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pointset"
+version = "0.0.1"
+authors = [
+  { name="Gereon Tombrink", email="mail@gtombrink.de" },
+]
+description = "Python package for simple EPSG transformations using PyProj"
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+keywords = ["point", "transformation", "EPSG", "pyproj"]
+dependencies = [
+  "numpy",
+  "pyproj>3.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/gereon-t/pointset"
+"Bug Tracker" = "https://github.com/gereon-t/pointset/issues"
