@@ -376,7 +376,7 @@ class PointSet:
 
         return pointset
 
-    def to_local(self, inplace: bool = True) -> np.ndarray:
+    def to_local(self, inplace: bool = True) -> "PointSet":
         """Transform pointset to a local frame tangential to the
            (grs80) ellipsoid
 
