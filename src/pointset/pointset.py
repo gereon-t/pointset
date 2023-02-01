@@ -113,14 +113,14 @@ class PointSet:
         llh_geod = self.to_epsg(target_epsg=self.epsg_local_geod, inplace=False)
 
         # mean latitude and longitude
-        mean_lat = np.deg2rad(np.mean(llh_geod[:, 0]))
-        mean_lon = np.deg2rad(np.mean(llh_geod[:, 1]))
+        mean_lat = np.deg2rad(np.mean(llh_geod.x))
+        mean_lon = np.deg2rad(np.mean(llh_geod.y))
 
         # geocentric cartesian
         xyz_cart = self.to_epsg(target_epsg=self.epsg_local_cart, inplace=False)
 
         # mean position
-        mean_pos = np.mean(xyz_cart, axis=0)
+        mean_pos = np.mean(xyz_cart.xyz, axis=0)
 
         # transformation matrix
         t_local = np.array(
@@ -307,7 +307,7 @@ class PointSet:
         """
         return None if self.epsg == 0 else CRS.from_epsg(code=self.epsg)
 
-    def to_epsg(self, target_epsg: int, inplace: bool = True) -> np.ndarray:
+    def to_epsg(self, target_epsg: int, inplace: bool = True) -> "PointSet":
         """Performs a coordinate transformation using a target crs
 
         This method will construct the required pyproj transformer and
@@ -326,58 +326,55 @@ class PointSet:
                            is unknown
 
         Returns:
-            np.ndarray: 2-dimensional array containing xyz of the
-                        transformed points
+            PointSet: transformed pointset
         """
+        pointset = self if inplace else self.copy()
+
         # 0) already there
-        if self.epsg == target_epsg:
-            return self.xyz
+        if pointset.epsg == target_epsg:
+            return pointset
 
         # currently in unknown frame
-        if self.epsg == 0 and self.local_transformer is None:
+        if pointset.epsg == 0 and pointset.local_transformer is None:
             raise PointSetError("Unable to recover from local frame since definition is unknown!")
 
         # 1) from non-local to local
         if target_epsg == 0:
             # geocentric cartesian (ITRF2014)
-            xyz = self.to_epsg(target_epsg=self.epsg_local_cart, inplace=False)
+            pointset.to_epsg(target_epsg=pointset.epsg_local_cart)
 
             # apply local transformer
-            x, y, z = self.local_transformer.transform(xx=xyz[:, 0], yy=xyz[:, 1], zz=xyz[:, 2])
+            x, y, z = pointset.local_transformer.transform(xx=pointset.x, yy=pointset.y, zz=pointset.z)
 
-            # update if inplace
-            if inplace:
-                self.xyz = np.c_[x, y, z]
-                self.epsg = target_epsg
+            pointset.xyz = np.c_[x, y, z]
+            pointset.epsg = target_epsg
 
-            return np.c_[x, y, z]
+            return pointset
 
         # 2) from local to non-local (intermediate step)
-        if self.epsg == 0:
+        if pointset.epsg == 0:
             # undo local transformation
-            x, y, z = self.local_transformer.transform(
-                xx=self.x,
-                yy=self.y,
-                zz=self.z,
+            x, y, z = pointset.local_transformer.transform(
+                xx=pointset.x,
+                yy=pointset.y,
+                zz=pointset.z,
                 direction=TransformDirection.INVERSE,
             )
             xyz = np.c_[x, y, z]
-            crs = CRS.from_epsg(self.epsg_local_cart)
+            crs = CRS.from_epsg(pointset.epsg_local_cart)
         else:
-            xyz = self.xyz
-            crs = self.crs
+            xyz = pointset.xyz
+            crs = pointset.crs
 
         # 3) from non-local to non-local
         transformer = Transformer.from_crs(crs, CRS.from_epsg(code=target_epsg))
 
         x, y, z = transformer.transform(xx=xyz[:, 0], yy=xyz[:, 1], zz=xyz[:, 2])
 
-        # update epsg if inplace
-        if inplace:
-            self.xyz = np.c_[x, y, z]
-            self.epsg = target_epsg
+        pointset.xyz = np.c_[x, y, z]
+        pointset.epsg = target_epsg
 
-        return np.c_[x, y, z]
+        return pointset
 
     def to_local(self, inplace: bool = True) -> np.ndarray:
         """Transform pointset to a local frame tangential to the
