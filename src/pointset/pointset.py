@@ -387,7 +387,7 @@ class PointSet:
                                       Defaults to True.
 
         Returns:
-            np.ndarray: 2-dimensional array containing xyz of the
+            PointSet: 2-dimensional PointSet containing xyz of the
                         transformed points
         """
         return self.to_epsg(target_epsg=0, inplace=inplace)
