@@ -1,6 +1,6 @@
 import numpy as np
 import unittest
-from pointset.pointset import PointSet, PointSetError
+from pointset import PointSet, PointSetError
 
 
 class TestPointSet(unittest.TestCase):
