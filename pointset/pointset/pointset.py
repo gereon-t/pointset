@@ -30,7 +30,7 @@ class PointSet:
 
     def __init__(
         self,
-        xyz: np.ndarray,
+        xyz: Union[np.ndarray, list],
         epsg: int = 0,
         local_transformer: Transformer = None,
         init_local_transformer: bool = True,
@@ -90,7 +90,10 @@ class PointSet:
         """
 
         if not isinstance(xyz, np.ndarray):
-            raise PointSetError("Input must be numpy array!")
+            xyz = np.array(xyz)
+
+        if (len(xyz.shape) == 1 and len(xyz) != 3) or (len(xyz.shape) == 2 and xyz.shape[1] != 3):
+            raise PointSetError("Input must be nx3 or 3xNone array!")
 
         self.xyz = xyz
         self.epsg = epsg
