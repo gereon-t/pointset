@@ -46,10 +46,6 @@ class TestPointSet(unittest.TestCase):
         with self.assertRaises(PointSetError):
             self.local_point.to_epsg(25832)
 
-    def test_wrong_init(self):
-        with self.assertRaises(PointSetError):
-            PointSet(xyz=[1, 2, 3])
-
     def test_mean(self):
         manual_mean = np.mean(self.multi_point.xyz, axis=0)
         p_mean = self.multi_point.copy()

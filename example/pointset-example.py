@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-from pointset.pointset import PointSet, PointSetError
+from pointset import PointSet, PointSetError
 import numpy as np
 
 
