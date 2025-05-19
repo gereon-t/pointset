@@ -9,78 +9,6 @@ python3 -m pip install pointset
 # Usage
 The `PointSet` class wraps `pyproj` in order to allow coordinate transformations. In the following, the functionality of the class is explained.
 
-Define PointSet with random numbers
-
-```python 
-from pointset import PointSet
-
-xyz = np.random.randn(10000, 3) * 20
-point_set = PointSet(xyz=xyz)
-```
-print the point set to see the EPSG code and the coordinates:
-```python 
-print(point_set)
-```
-Output (for example):
-```console
-EPSG: 0
-Coordinates:
-[[  2.61185114  26.86022378  24.16762049]
- [-13.10880044  -0.59031669  25.03318095]
- [ 11.7225511   -8.60815889   8.14436657]
- ...
- [  2.92442258 -24.89119898  -2.17729086]
- [  1.45229968  24.66663312  21.73038683]
- [ 15.90327212  28.88909949   4.56549931]]
-```
-Because we only provided the numpy array and no other parameters,
-this PointSet has no datum information. The positions are assumed
-to be in a local unknown frame, which is denoted with an EPSG code
-of 0.
-Therefore, we will get an error if we try to change the EPSG code to
-some global frame, e.g. EPSG: 4937
-```python 
-try:
-    point_set.to_epsg(4937)
-except PointSetError as e:
-    print(e)
-```
-Output:
-```console
-Unable to recover from local frame since definition is unknown!
-```
-However, we can still do some data operations like computing the mean of
-the point_set (which will also be a PointSet):
-```python
-mean_pos = point_set.mean()
-```
-We can access the raw values of the PointSet coordinates using `x` `y` `z` or `xyz`
-```python
-print(f"Mean: {mean_pos.xyz}, x = {mean_pos.x:.3f}, y = {mean_pos.y:.3f}, z = {mean_pos.z:.3f}")
-```
-Output:
-```console
-Mean: [[-0.03867169  0.21157332  0.0836462 ]], x = -0.039, y = 0.212, z = 0.084
-```
-It also possible to change the values in this way:
-```python
-mean_pos.y = 10
-print(f"Changed y-value to: {mean_pos.y:.3f}")
-```
-Output:
-```console
-Changed y-value to: 10.000
-```
-To add / substract two PointSets, use normal operators:
-```python
-added_point_set = point_set + mean_pos
-```
-
-You can create a deep copy of the PointSet using .copy():
-```python
-copied_point_set = point_set.copy()
-```
-
 ## PointSet with Datum information
 In the example above we just generated random positions without any datum information. However the main feature of this class is datum transformations.
 
@@ -161,4 +89,78 @@ plt.plot(point_set.x, point_set.y, ".")
 plt.plot(utm_point_set.x, utm_point_set.y, ".r")
 plt.axis("equal")
 plt.show()
+```
+
+## PointSet without Datum information
+
+Define PointSet with random numbers
+
+```python 
+from pointset import PointSet
+
+xyz = np.random.randn(10000, 3) * 20
+point_set = PointSet(xyz=xyz)
+```
+print the point set to see the EPSG code and the coordinates:
+```python 
+print(point_set)
+```
+Output (for example):
+```console
+EPSG: 0
+Coordinates:
+[[  2.61185114  26.86022378  24.16762049]
+ [-13.10880044  -0.59031669  25.03318095]
+ [ 11.7225511   -8.60815889   8.14436657]
+ ...
+ [  2.92442258 -24.89119898  -2.17729086]
+ [  1.45229968  24.66663312  21.73038683]
+ [ 15.90327212  28.88909949   4.56549931]]
+```
+Because we only provided the numpy array and no other parameters,
+this PointSet has no datum information. The positions are assumed
+to be in a local unknown frame, which is denoted with an EPSG code
+of 0.
+Therefore, we will get an error if we try to change the EPSG code to
+some global frame, e.g. EPSG: 4937
+```python 
+try:
+    point_set.to_epsg(4937)
+except PointSetError as e:
+    print(e)
+```
+Output:
+```console
+Unable to recover from local frame since definition is unknown!
+```
+However, we can still do some data operations like computing the mean of
+the point_set (which will also be a PointSet):
+```python
+mean_pos = point_set.mean()
+```
+We can access the raw values of the PointSet coordinates using `x` `y` `z` or `xyz`
+```python
+print(f"Mean: {mean_pos.xyz}, x = {mean_pos.x:.3f}, y = {mean_pos.y:.3f}, z = {mean_pos.z:.3f}")
+```
+Output:
+```console
+Mean: [[-0.03867169  0.21157332  0.0836462 ]], x = -0.039, y = 0.212, z = 0.084
+```
+It also possible to change the values in this way:
+```python
+mean_pos.y = 10
+print(f"Changed y-value to: {mean_pos.y:.3f}")
+```
+Output:
+```console
+Changed y-value to: 10.000
+```
+To add / substract two PointSets, use normal operators:
+```python
+added_point_set = point_set + mean_pos
+```
+
+You can create a deep copy of the PointSet using .copy():
+```python
+copied_point_set = point_set.copy()
 ```
