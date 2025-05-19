@@ -71,25 +71,8 @@ PointSets in the same local coordinate frame. You can do this by setting the
 point_set.local_transformer = utm_point_set.local_transformer
 point_set = PointSet(xyz=xyz, epsg=0, local_transformer=utm_point_set.local_transformer)
 ```
-Now, the randomly created points from the beginning have the same datum
-information as the utm-coordinates. Therefore, we can transform them into
-any EPSG:
-```python
-point_set.to_epsg(25832)
-```
-If we transform our utm_point_set from local back to utm, we can plot PointSets in UTM
-```python
-utm_point_set.to_epsg(25832)
-
-plt.figure()
-plt.xlabel("x [m]")
-plt.ylabel("y [m]")
-plt.grid()
-plt.plot(point_set.x, point_set.y, ".")
-plt.plot(utm_point_set.x, utm_point_set.y, ".r")
-plt.axis("equal")
-plt.show()
-```
+Now, the newly created pointset has the same datum
+information as the utm-coordinates.
 
 ## PointSet without Datum information
 
