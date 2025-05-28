@@ -111,6 +111,12 @@ class PointSet:
 
         self.build_local_transformer()
 
+    def __iter__(self):
+        return iter(self.xyz)
+
+    def __next__(self):
+        return next(iter(self.xyz))
+
     def build_local_transformer(self):
         # geodetic
         llh_geod = self.to_epsg(target_epsg=self.epsg_local_geod, inplace=False)
